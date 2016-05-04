@@ -4,17 +4,54 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Hexo</title>
+  <title>RubyCritic-一款不错的检测代码质量工具 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://superiorlu.github.io/index.html">
+  <meta name="description" content="最近在开发Cloud Insight API时，发现一个可以检测ruby代码质量的工具-RubyCritic。
+
+RubyCritic 集成 Reek, Flay 和 Flog这3个分析代码的工具，对你的Ruby代码进行静态分析并生成质量报告。
+
+功能介绍
+可以总览你的项目,并且可以对代码打分(百分制)
+
+根据各自的坏味道数量建立文件索引
+
+
+对不同文件按照改动频率、复杂度、重复度和坏味道4个维">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RubyCritic-一款不错的检测代码质量工具">
+<meta property="og:url" content="http://superiorlu.github.io/2016/02/04/rubycirtic/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description">
+<meta property="og:description" content="最近在开发Cloud Insight API时，发现一个可以检测ruby代码质量的工具-RubyCritic。
+
+RubyCritic 集成 Reek, Flay 和 Flog这3个分析代码的工具，对你的Ruby代码进行静态分析并生成质量报告。
+
+功能介绍
+可以总览你的项目,并且可以对代码打分(百分制)
+
+根据各自的坏味道数量建立文件索引
+
+
+对不同文件按照改动频率、复杂度、重复度和坏味道4个维">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/334070-7fdec9ad235198e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/334070-ecb14c8223ecc2d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/334070-05af269cc72e0716.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/334070-f40ca5b5b16c0f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/334070-e6faffc555b6ff22.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-05-04T05:57:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description">
+<meta name="twitter:title" content="RubyCritic-一款不错的检测代码质量工具">
+<meta name="twitter:description" content="最近在开发Cloud Insight API时，发现一个可以检测ruby代码质量的工具-RubyCritic。
+
+RubyCritic 集成 Reek, Flay 和 Flog这3个分析代码的工具，对你的Ruby代码进行静态分析并生成质量报告。
+
+功能介绍
+可以总览你的项目,并且可以对代码打分(百分制)
+
+根据各自的坏味道数量建立文件索引
+
+
+对不同文件按照改动频率、复杂度、重复度和坏味道4个维">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/334070-7fdec9ad235198e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -163,157 +200,7 @@
 	</div>
 </nav>
 
-      <div class="body-wrap">
-  
-    <article id="post-monitor-unicorn-metrics" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/04/20/monitor-unicorn-metrics/" class="article-date">
-  	<time datetime="2016-04-20T06:24:46.000Z" itemprop="datePublished">2016-04-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/20/monitor-unicorn-metrics/">如何持续监控 Unicorn 的性能指标</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>最近用 <a href="https://github.com/ruby-grape/grape" target="_blank" rel="external">Grape</a> 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 <a href="https://github.com/" target="_blank" rel="external">github</a> 上找到了这个开源的代码：<a href="https://github.com/TheClimateCorporation/unicorn-metrics" target="_blank" rel="external">unicron_metrics</a>。用起来还不错，下面给大家介绍一下认识。</p>
-<h3 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h3><p><code>unicorn_metrics</code>是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn<br>的多进程服务器，并提供一个对外查看数据的接口。</p>
-<h3 id="如何监控"><a href="#如何监控" class="headerlink" title="如何监控"></a>如何监控</h3><p>通过 <a href="http://raindrops.bogomips.org" target="_blank" rel="external">raindrops</a> 来采集<code>Uincorn</code>指标数据，同时通过构建<code>Middleware</code>统计应用中HTTP指标数据。</p>
-<h3 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h3><p><code>unicorn_metrics</code>监控指标分2部分：http指标和raindrops指标, 下面介绍各方面的指标：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">指标名称</th>
-<th style="text-align:left">指标类型</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">request.GET</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">GET请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.POST</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">POST请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.PUT</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">PUT请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.DELETE</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">DELETE请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.HEAD</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">HEAD请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.2xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为2xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.3xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为3xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.4xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为4xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.5xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为5xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.calling</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">应用服务器调度的数量</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.writing</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">被写入数据的客户端的数量</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.active</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">所有进程中已连接并尚未关闭的sockets的连接数 </td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.queued</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">等待连接sockets的请求数</td>
-</tr>
-</tbody>
-</table>
-<h3 id="监控步骤"><a href="#监控步骤" class="headerlink" title="监控步骤"></a>监控步骤</h3><p>1.安装</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gem <span class="string">'unicorn_metrics'</span>, <span class="symbol">github:</span> <span class="string">'superiorlu/unicorn_metrics'</span></span><br><span class="line">$ bundle</span><br></pre></td></tr></table></figure>
-<p>2.配置unincor_metric.rb</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#config/initializers/unicorn_metrics.rb</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">defined</span>?(UnicornMetrics)</span><br><span class="line">  UnicornMetrics.configure <span class="keyword">do</span> <span class="params">|c|</span></span><br><span class="line">    c.app_name = <span class="string">'app_name'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>3.配置config.ru (Rails无需配置)</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># config.ru</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">require</span> <span class="string">'unicorn_metrics/middleware'</span></span><br><span class="line"> use UnicornMetrics::Middleware</span><br><span class="line"> <span class="comment"># other middleware...</span></span><br><span class="line"> run N::Application</span><br></pre></td></tr></table></figure>
-<p>4.visit <a href="http://localhost:3000/metrics" target="_blank" rel="external">http://localhost:3000/metrics</a>, 返回unicorn的各方面的指标。</p>
-<h3 id="实时监控和报警"><a href="#实时监控和报警" class="headerlink" title="实时监控和报警"></a>实时监控和报警</h3><p>由于<code>unicorn_metrics</code>只提供了查看<code>unicorn</code>性能指标的接口，根据业务的需求我们对其进行了修改，使其可以在装有我们 <a href="http://www.oneapm.com/ci/feature.html" target="_blank" rel="external">CloudInsight 探针</a> 的服务器上使用 <a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="external">Cloud Insight Ruby SDK</a> 进行实时回传性能数据，形成dashboard图表同时在服务器出现问题时及时报警。具体数据图表 见下图：</p>
-<p><a href="http://superiorlu.github.io/index.html"><img src="https://ruby-china-files.b0.upaiyun.com/photo/2016/dd8a1e361cc1a347c5dcc4f2f496c79d.png" alt=""></a></p>
-<p>数据图表组成仪表盘示例: <a href="http://superiorlu.github.io/dashboards.html">http://superiorlu.github.io/dashboards.html</a></p>
-<p>源码见：<a href="https://github.com/superiorlu/unicorn_metrics" target="_blank" rel="external">https://github.com/superiorlu/unicorn_metrics</a></p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本文介绍了使用<code>unicorn_metris</code>对<code>Unicorn</code>进行持续监控。 使用<a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="external">Cloud Insight Ruby SDK</a>， 不但可以传输性能数据， 还可以传输自定义的业务数据，将数据以图表的展示出来，并根据需求添加相应的报警服务。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unicorn/">unicorn</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-rubycirtic" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-rubycirtic" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/02/04/rubycirtic/" class="article-date">
@@ -329,12 +216,23 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/04/rubycirtic/">RubyCritic-一款不错的检测代码质量工具</a>
+    <h1 class="article-title" itemprop="name">
+      RubyCritic-一款不错的检测代码质量工具
     </h1>
   
 
       </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code-style/">code_style</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rubyciritc/">rubyciritc</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -381,33 +279,72 @@
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code-style/">code_style</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rubyciritc/">rubyciritc</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/20/monitor-unicorn-metrics/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          如何持续监控 Unicorn 的性能指标
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
   
 </article>
 
 
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
 
 
 
 
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="rubycirtic" data-title="RubyCritic-一款不错的检测代码质量工具" data-url="http://superiorlu.github.io/2016/02/04/rubycirtic/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
 
-  
-  
+
+
+
 </div>
       <footer id="footer">
   <div class="outer">
@@ -431,8 +368,8 @@
 		fancybox: true,
 		mathjax: true,
 		animate: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
