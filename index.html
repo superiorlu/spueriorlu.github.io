@@ -32,7 +32,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="http://thumbnail0.baidupcs.com/thumbnail/5fff1f214ad9a30f3e7530928b8a7bca?fid=2080620978-250528-452401064078803&amp;time=1462341600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-ucJQtT1X8ACvxAwSnrZG0Mpty3Y%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=2889748733839448670&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100" class="js-avatar">
+			<img lazy-src="http://7xtn37.com1.z0.glb.clouddn.com/avator.jpg?attname=&amp;e=1462376506&amp;token=v0GAuIr8RGwy69HrgIxb2mV7A-qdPz_HCjurQ5Q8:PoAqIn5o-diUxSZh2ZDC-OU3bVA" class="js-avatar">
 			
 		</a>
 
@@ -70,7 +70,7 @@
 						<li>Tags</li>
 						
 						
-						<li>A propos</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -103,7 +103,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/code-style/" style="font-size: 10px;">code_style</a> <a href="/tags/performance/" style="font-size: 10px;">performance</a> <a href="/tags/rubyciritc/" style="font-size: 10px;">rubyciritc</a> <a href="/tags/unicorn/" style="font-size: 10px;">unicorn</a>
+						<a href="/tags/code-style/" style="font-size: 10px;">code_style</a> <a href="/tags/memory/" style="font-size: 10px;">memory</a> <a href="/tags/passenger/" style="font-size: 10px;">passenger</a> <a href="/tags/performance/" style="font-size: 10px;">performance</a> <a href="/tags/puma/" style="font-size: 10px;">puma</a> <a href="/tags/rubyciritc/" style="font-size: 10px;">rubyciritc</a> <a href="/tags/unicorn/" style="font-size: 10px;">unicorn</a>
 					</div>
 				</section>
 				
@@ -133,7 +133,7 @@
 		<header id="header" class="inner">
 			<div class="profilepic">
 			
-				<img lazy-src="http://thumbnail0.baidupcs.com/thumbnail/5fff1f214ad9a30f3e7530928b8a7bca?fid=2080620978-250528-452401064078803&amp;time=1462341600&amp;rt=sh&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-ucJQtT1X8ACvxAwSnrZG0Mpty3Y%3D&amp;expires=8h&amp;chkv=0&amp;chkbd=0&amp;chkpc=&amp;dp-logid=2889748733839448670&amp;dp-callid=0&amp;size=c710_u400&amp;quality=100" class="js-avatar">
+				<img lazy-src="http://7xtn37.com1.z0.glb.clouddn.com/avator.jpg?attname=&amp;e=1462376506&amp;token=v0GAuIr8RGwy69HrgIxb2mV7A-qdPz_HCjurQ5Q8:PoAqIn5o-diUxSZh2ZDC-OU3bVA" class="js-avatar">
 			
 			</div>
 			<hgroup>
@@ -386,6 +386,84 @@
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/code-style/">code_style</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rubyciritc/">rubyciritc</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-caculate-app-memory-on-macosx" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/05/caculate-app-memory-on-macosx/" class="article-date">
+  	<time datetime="2015-12-05T14:45:11.000Z" itemprop="datePublished">2015-12-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/05/caculate-app-memory-on-macosx/">探讨如何统计 Ruby 应用服务器使用内存方法</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在解决探针获取Ruby应用服务器的内存使用的情况，将解决的思路总结一下，希望对此感兴趣的伙伴一起探讨。</p>
+<p>先对比应用服务器：<a href="http://puma.io/" target="_blank" rel="external">Puma</a>和<a href="https://www.phusionpassenger.com/" target="_blank" rel="external">Passenger</a>，下面对比这2个服务器内存统计，</p>
+<h2 id="Puma-2-13-4"><a href="#Puma-2-13-4" class="headerlink" title="Puma (2.13.4)"></a>Puma (2.13.4)</h2><p> 单进程模式：直接获取进程id: <code>Process.pid</code><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">memory = <span class="string">`ps -o rss= <span class="subst">#&#123;Process.pid&#125;</span>`</span>.to_f / <span class="number">1024</span> <span class="comment">#单位:MB</span></span><br></pre></td></tr></table></figure></p>
+<p>cluster模式：以启动2个worker进程为例:<br> <img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/60a1b6bc9287dffc9009bc01326c6035.png" alt="Puma cluster"><br>从上面截图可以看到，Puma启动后会出现3个进程：1个master进程和2个worker进程。<br>内存的使用情况(见<strong>RSS</strong>列):<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">109908</span> + <span class="number">109868</span> + <span class="number">7256</span> ).to_f / <span class="number">1024</span> = <span class="number">221.7109375</span> <span class="comment">#单位:MB</span></span><br></pre></td></tr></table></figure></p>
+<p>而对于探针来说，一个探针实例是伴随进程一起启动的，也就说一个探针只能识别自己所在的进程id，那如何获取应用服务器使用的内存？我们用其中1个woker进程所在的进程组[<strong>PGID</strong>]看一下:(为啥不是父进程?, 见下文Passenger)<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/be497a0b55f9f290a647aab6b7d7d9c6.png" alt="puma 2"><br>这3个进程都在相同的进程组里，而且进程组号为master的进程id，那我们就可以用这个信息获取应用服务器的所使用的内存:</p>
+<ol>
+<li>得到1个worker进程id: <code>Process.pid</code></li>
+<li>获取所在进程组: <code>Process.getpgrp</code></li>
+<li><p>获取到进程组内所有的进程: </p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`ps -o pid,pgid -e | grep -w "<span class="subst">#&#123;pgrp_id&#125;</span>"`</span>.split(<span class="regexp">/\s+/</span>).uniq</span><br></pre></td></tr></table></figure>
+<p>4.累加进程组内进程内存和即为应用服务器使用内存: </p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pids.inject(<span class="number">0</span>.<span class="number">0</span>)&#123;<span class="params">|m, pid|</span> m + memory(pid)&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Passenger-5-0-20"><a href="#Passenger-5-0-20" class="headerlink" title="Passenger (5.0.20)"></a>Passenger (5.0.20)</h2><p>启动Passenger后的Process信息：<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/5c2b218898a242c6744c1601108baf1b.png" alt="passenger 1"><br>对Passenger架构感兴趣的请移步到<a href="https://www.phusionpassenger.com/documentation/Design%20and%20Architecture.html" target="_blank" rel="external">这儿</a>.<br>查看一下worker所在进程组和父进程:<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/3e2b7e8997c30a308e8bf52d42a394c6.png" alt="passenger 2"><br>通过PPID可以看出<br><code>Passenger core —&gt; Passenger AppPreloader —&gt; Passenger RubyApp</code><br>三者为爷-父-子关系，当服务器请求量增大时<code>AppPreloader</code>会产生新的进程来响应请求,从而新的<code>RubyApp</code>进程的<strong>PPID</strong>即为<code>AppPreloader</code>的<strong>PID</strong>，这样看来就可以将同一个<strong>PPID</strong>的进程加起来得到应用服务器的内存？</p>
+<p>由于Passenger会根据服务器的负载量动态调整进程数，当服务器请求量较小时，Passenger会kill多余的进程，会出现下面的情况：<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/f5a5787b87b97c6cd904aa5df5f84559.png" alt="pssenger 3"></p>
+<p><code>AppPreloader</code>也被Passenger杀掉了。原<code>RubyApp</code>进程的<strong>PPID</strong>变成了1。这时如果服务器的请求量增大，应用服务器进程会成为这样：<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/2075d985c4df04fec32fb9bf13114a2d.png" alt="passener 4"></p>
+<p><code>Passenger core</code> 产生新的<code>AppPreloader</code>进程，并且<code>AppPreloader</code>产生新的<code>RubyApp</code>进程，这时如果只用<strong>PPID</strong>统计应用服务器内存就会不准确，所以要统计Passenger的使用的内存还得通过累加在同一个进程组(<strong>PGID</strong>)的所有进程使用的内存和得到。</p>
+<p>由于<a href="http://unicorn.bogomips.org/" target="_blank" rel="external">Unicorn</a>和<a href="http://rainbows.bogomips.org/" target="_blank" rel="external">Rainbows</a>都与Puma的cluster模式[master+worker模式]类似，内存统计的方式可以参考上文的Puma。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>由于<a href="http://code.macournoyer.com/thin/" target="_blank" rel="external">Thin</a>启动多个server后没有类似的特点，上面方法不适用于Thin，有好方法的伙伴们可以告知:smile:</p>
+<p>在解决探针统计应用服务器的内存问题上，摸索出了上面的一条路子，如果小伙伴们有其他更好的方式，可以一起探讨一下。</p>
+<h2 id="10月15日更新"><a href="#10月15日更新" class="headerlink" title="10月15日更新"></a>10月15日更新</h2><p>对于<a href="http://code.macournoyer.com/thin/" target="_blank" rel="external">Thin</a>，有一种思路是使用<a href="https://github.com/ddollar/foreman" target="_blank" rel="external">foreman</a>来管理应用进程，这样就可以统一计算应用服务器内存方法。<br><img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/81d29c59cb07e9802a6b481c668b2230.png" alt="Thin">  欢迎拍砖。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/memory/">memory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/passenger/">passenger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/puma/">puma</a></li></ul>
 	</div>
 
       
