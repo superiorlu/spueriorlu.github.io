@@ -1,214 +1,417 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
+
+
+
   
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>如何持续监控 Unicorn 的性能指标 | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。
-是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="unicorn,performance,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Lu's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。 是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
+<meta name="keywords" content="unicorn,performance">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何持续监控 Unicorn 的性能指标">
-<meta property="og:url" content="http://superiorlu.github.io/2016/04/20/monitor-unicorn-metrics/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。
-是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
+<meta property="og:url" content="https://blog.lovecoding.org/2016/04/20/monitor-unicorn-metrics/index.html">
+<meta property="og:site_name" content="Lu&#39;s Blog">
+<meta property="og:description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。 是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://ruby-china-files.b0.upaiyun.com/photo/2016/dd8a1e361cc1a347c5dcc4f2f496c79d.png">
-<meta property="og:updated_time" content="2016-05-04T05:56:24.000Z">
+<meta property="og:updated_time" content="2018-12-11T09:07:31.878Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何持续监控 Unicorn 的性能指标">
-<meta name="twitter:description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。
-是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
+<meta name="twitter:description" content="背景介绍最近用 Grape 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 github 上找到了这个开源的代码：unicron_metrics。用起来还不错，下面给大家介绍一下认识。 是什么unicorn_metrics是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn的多进程服务器，并提供一个对外查看数据的">
 <meta name="twitter:image" content="https://ruby-china-files.b0.upaiyun.com/photo/2016/dd8a1e361cc1a347c5dcc4f2f496c79d.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'U3R6XYWSXC',
+      apiKey: '',
+      indexName: 'blogs',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.lovecoding.org/2016/04/20/monitor-unicorn-metrics/">
+
+
+
+
+
+  <title>如何持续监控 Unicorn 的性能指标 | Lu's Blog</title>
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  <link rel="stylesheet" href="/css/style.css">
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9e2a43578d6bfa74755079c7a4f38068";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
 </head>
 
-<body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-	<header id="header" class="inner">
-		<a href="/" class="profilepic">
-			
-			<img lazy-src="http://7xtn37.com2.z0.glb.qiniucdn.com/avator.jpg" class="js-avatar">
-			
-		</a>
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-		<hgroup>
-		  <h1 class="header-author"><a href="/">superiorlu</a></h1>
-		</hgroup>
+  
+  
+    
+  
 
-		
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
 
-		
-			<div class="switch-btn">
-				<div class="icon">
-					<div class="icon-ctn">
-						<div class="icon-wrap icon-house" data-idx="0">
-							<div class="birdhouse"></div>
-							<div class="birdhouse_holes"></div>
-						</div>
-						<div class="icon-wrap icon-ribbon hide" data-idx="1">
-							<div class="ribbon"></div>
-						</div>
-						
-						
-						<div class="icon-wrap icon-me hide" data-idx="3">
-							<div class="user"></div>
-							<div class="shoulder"></div>
-						</div>
-						
-					</div>
-					
-				</div>
-				<div class="tips-box hide">
-					<div class="tips-arrow"></div>
-					<ul class="tips-inner">
-						<li>Menu</li>
-						<li>Tags</li>
-						
-						
-						<li>Über</li>
-						
-					</ul>
-				</div>
-			</div>
-		
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-		<div class="switch-area">
-			<div class="switch-wrap">
-				<section class="switch-part switch-part1">
-					<nav class="header-menu">
-						<ul>
-						
-							<li><a href="/">主页</a></li>
-				        
-							<li><a href="/archives">所有文章</a></li>
-				        
-						</ul>
-					</nav>
-					<nav class="header-nav">
-						<div class="social">
-							
-								<a class="github" target="_blank" href="https://github.com/superiorlu" title="github">github</a>
-					        
-								<a class="mail" target="_blank" href="/rubyist518@126.com" title="mail">mail</a>
-					        
-						</div>
-					</nav>
-				</section>
-				
-				
-				<section class="switch-part switch-part2">
-					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/code-style/" style="font-size: 10px;">code_style</a> <a href="/tags/memory/" style="font-size: 10px;">memory</a> <a href="/tags/passenger/" style="font-size: 10px;">passenger</a> <a href="/tags/performance/" style="font-size: 10px;">performance</a> <a href="/tags/puma/" style="font-size: 10px;">puma</a> <a href="/tags/rubycritic/" style="font-size: 10px;">rubycritic</a> <a href="/tags/unicorn/" style="font-size: 10px;">unicorn</a>
-					</div>
-				</section>
-				
-				
-				
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lu's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
 
-				
-				
-				<section class="switch-part switch-part3">
-				
-					<div id="js-aboutme">09年开始接触Ruby，努力成为一名Rubyist. 目前就职OneAPM，主要负责Ruby探针和CloudInSight API</div>
-				</section>
-				
-			</div>
-		</div>
-	</header>				
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
     </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-  	<div class="overlay">
-  		<div class="slider-trigger"></div>
-  		<h1 class="header-author js-mobile-header hide">superiorlu</h1>
-  	</div>
-	<div class="intrude-less">
-		<header id="header" class="inner">
-			<div class="profilepic">
-			
-				<img lazy-src="http://7xtn37.com2.z0.glb.qiniucdn.com/avator.jpg" class="js-avatar">
-			
-			</div>
-			<hgroup>
-			  <h1 class="header-author">superiorlu</h1>
-			</hgroup>
-			
-			<nav class="header-menu">
-				<ul>
-				
-					<li><a href="/">主页</a></li>
-		        
-					<li><a href="/archives">所有文章</a></li>
-		        
-		        <div class="clearfix"></div>
-				</ul>
-			</nav>
-			<nav class="header-nav">
-				<div class="social">
-					
-						<a class="github" target="_blank" href="https://github.com/superiorlu" title="github">github</a>
-			        
-						<a class="mail" target="_blank" href="/rubyist518@126.com" title="mail">mail</a>
-			        
-				</div>
-			</nav>
-		</header>				
-	</div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
 </nav>
 
-      <div class="body-wrap"><article id="post-monitor-unicorn-metrics" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/04/20/monitor-unicorn-metrics/" class="article-date">
-  	<time datetime="2016-04-20T06:24:46.000Z" itemprop="datePublished">2016-04-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
     
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      如何持续监控 Unicorn 的性能指标
-    </h1>
+
   
 
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.lovecoding.org/2016/04/20/monitor-unicorn-metrics/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LuYingRui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lu's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何持续监控 Unicorn 的性能指标</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-20T14:24:46+08:00">
+                2016-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/04/20/monitor-unicorn-metrics/" class="leancloud_visitors" data-flag-title="如何持续监控 Unicorn 的性能指标">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
-      
-      <div class="article-info article-info-post">
-        
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unicorn/">unicorn</a></li></ul>
-	</div>
-
-        
-
-        <div class="clearfix"></div>
-      </div>
-      
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>最近用 <a href="https://github.com/ruby-grape/grape" target="_blank" rel="external">Grape</a> 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 <a href="https://github.com/" target="_blank" rel="external">github</a> 上找到了这个开源的代码：<a href="https://github.com/TheClimateCorporation/unicorn-metrics" target="_blank" rel="external">unicron_metrics</a>。用起来还不错，下面给大家介绍一下认识。</p>
+      
+
+      
+        <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>最近用 <a href="https://github.com/ruby-grape/grape" target="_blank" rel="noopener">Grape</a> 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 <a href="https://github.com/" target="_blank" rel="noopener">github</a> 上找到了这个开源的代码：<a href="https://github.com/TheClimateCorporation/unicorn-metrics" target="_blank" rel="noopener">unicron_metrics</a>。用起来还不错，下面给大家介绍一下认识。</p>
 <h3 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h3><p><code>unicorn_metrics</code>是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn<br>的多进程服务器，并提供一个对外查看数据的接口。</p>
-<h3 id="如何监控"><a href="#如何监控" class="headerlink" title="如何监控"></a>如何监控</h3><p>通过 <a href="http://raindrops.bogomips.org" target="_blank" rel="external">raindrops</a> 来采集<code>Uincorn</code>指标数据，同时通过构建<code>Middleware</code>统计应用中HTTP指标数据。</p>
+<h3 id="如何监控"><a href="#如何监控" class="headerlink" title="如何监控"></a>如何监控</h3><p>通过 <a href="http://raindrops.bogomips.org" target="_blank" rel="noopener">raindrops</a> 来采集<code>Uincorn</code>指标数据，同时通过构建<code>Middleware</code>统计应用中HTTP指标数据。</p>
 <h3 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h3><p><code>unicorn_metrics</code>监控指标分2部分：http指标和raindrops指标, 下面介绍各方面的指标：</p>
 <table>
 <thead>
@@ -286,144 +489,532 @@
 </tr>
 </tbody>
 </table>
+<a id="more"></a> 
 <h3 id="监控步骤"><a href="#监控步骤" class="headerlink" title="监控步骤"></a>监控步骤</h3><p>1.安装</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gem <span class="string">'unicorn_metrics'</span>, <span class="symbol">github:</span> <span class="string">'superiorlu/unicorn_metrics'</span></span><br><span class="line">$ bundle</span><br></pre></td></tr></table></figure>
 <p>2.配置unincor_metric.rb</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#config/initializers/unicorn_metrics.rb</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">defined</span>?(UnicornMetrics)</span><br><span class="line">  UnicornMetrics.configure <span class="keyword">do</span> <span class="params">|c|</span></span><br><span class="line">    c.app_name = <span class="string">'app_name'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <p>3.配置config.ru (Rails无需配置)</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># config.ru</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">require</span> <span class="string">'unicorn_metrics/middleware'</span></span><br><span class="line"> use UnicornMetrics::Middleware</span><br><span class="line"> <span class="comment"># other middleware...</span></span><br><span class="line"> run N::Application</span><br></pre></td></tr></table></figure>
-<p>4.visit <a href="http://localhost:3000/metrics" target="_blank" rel="external">http://localhost:3000/metrics</a>, 返回unicorn的各方面的指标。</p>
-<h3 id="实时监控和报警"><a href="#实时监控和报警" class="headerlink" title="实时监控和报警"></a>实时监控和报警</h3><p>由于<code>unicorn_metrics</code>只提供了查看<code>unicorn</code>性能指标的接口，根据业务的需求我们对其进行了修改，使其可以在装有我们 <a href="http://www.oneapm.com/ci/feature.html" target="_blank" rel="external">CloudInsight 探针</a> 的服务器上使用 <a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="external">Cloud Insight Ruby SDK</a> 进行实时回传性能数据，形成dashboard图表同时在服务器出现问题时及时报警。具体数据图表 见下图：</p>
-<p><a href="http://superiorlu.github.io/index.html"><img src="https://ruby-china-files.b0.upaiyun.com/photo/2016/dd8a1e361cc1a347c5dcc4f2f496c79d.png" alt=""></a></p>
-<p>数据图表组成仪表盘示例: <a href="http://superiorlu.github.io/dashboards.html">http://superiorlu.github.io/dashboards.html</a></p>
-<p>源码见：<a href="https://github.com/superiorlu/unicorn_metrics" target="_blank" rel="external">https://github.com/superiorlu/unicorn_metrics</a></p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本文介绍了使用<code>unicorn_metris</code>对<code>Unicorn</code>进行持续监控。 使用<a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="external">Cloud Insight Ruby SDK</a>， 不但可以传输性能数据， 还可以传输自定义的业务数据，将数据以图表的展示出来，并根据需求添加相应的报警服务。</p>
+<p>4.visit <a href="http://localhost:3000/metrics" target="_blank" rel="noopener">http://localhost:3000/metrics</a>, 返回unicorn的各方面的指标。</p>
+<h3 id="实时监控和报警"><a href="#实时监控和报警" class="headerlink" title="实时监控和报警"></a>实时监控和报警</h3><p>由于<code>unicorn_metrics</code>只提供了查看<code>unicorn</code>性能指标的接口，根据业务的需求我们对其进行了修改，使其可以在装有我们 <a href="http://www.oneapm.com/ci/feature.html" target="_blank" rel="noopener">CloudInsight 探针</a> 的服务器上使用 <a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="noopener">Cloud Insight Ruby SDK</a> 进行实时回传性能数据，形成dashboard图表同时在服务器出现问题时及时报警。具体数据图表 见下图：</p>
+<p><a href="http://superiorlu.github.io/index.html" target="_blank" rel="noopener"><img src="https://ruby-china-files.b0.upaiyun.com/photo/2016/dd8a1e361cc1a347c5dcc4f2f496c79d.png" alt=""></a></p>
+<p>数据图表组成仪表盘示例: <a href="http://superiorlu.github.io/dashboards.html" target="_blank" rel="noopener">http://superiorlu.github.io/dashboards.html</a></p>
+<p>源码见：<a href="https://github.com/superiorlu/unicorn_metrics" target="_blank" rel="noopener">https://github.com/superiorlu/unicorn_metrics</a></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本文介绍了使用<code>unicorn_metris</code>对<code>Unicorn</code>进行持续监控。 使用<a href="http://docs-ci.oneapm.com/api/ruby.html" target="_blank" rel="noopener">Cloud Insight Ruby SDK</a>， 不但可以传输性能数据， 还可以传输自定义的业务数据，将数据以图表的展示出来，并根据需求添加相应的报警服务。</p>
 
       
     </div>
     
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/unicorn/" rel="tag"># unicorn</a>
+          
+            <a href="/tags/performance/" rel="tag"># performance</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/04/rubycirtic/" rel="next" title="RubyCritic-一款不错的检测代码质量工具">
+                <i class="fa fa-chevron-left"></i> RubyCritic-一款不错的检测代码质量工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
-    
-<nav id="article-nav">
   
   
-    <a href="/2016/02/04/rubycirtic/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">RubyCritic-一款不错的检测代码质量工具</div>
-      <strong class="article-nav-caption">></strong>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<div class="share_jia">
-	<!-- JiaThis Button BEGIN -->
-	<div class="jiathis_style">
-		<span class="jiathis_txt">Share to: &nbsp; </span>
-		<a class="jiathis_button_facebook"></a> 
-    <a class="jiathis_button_twitter"></a>
-    <a class="jiathis_button_plus"></a> 
-    <a class="jiathis_button_tsina"></a>
-		<a class="jiathis_button_cqq"></a>
-		<a class="jiathis_button_douban"></a>
-		<a class="jiathis_button_weixin"></a>
-		<a class="jiathis_button_tumblr"></a>
-    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-	</div>
-	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
-	<!-- JiaThis Button END -->
-</div>
+  </article>
 
 
 
-
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="monitor-unicorn-metrics" data-title="如何持续监控 Unicorn 的性能指标" data-url="http://superiorlu.github.io/2016/04/20/monitor-unicorn-metrics/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
-
-
-
-
-</div>
-      <footer id="footer">
-  <div class="outer">
-    <div id="footer-info">
-    	<div class="footer-left">
-    		&copy; 2016 superiorlu
-    	</div>
-      	<div class="footer-right">
-      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-      	</div>
+    <div class="post-spread">
+      
     </div>
   </div>
-</footer>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
     
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="LuYingRui">
+            
+              <p class="site-author-name" itemprop="name">LuYingRui</p>
+              <p class="site-description motion-element" itemprop="description">Stay hungry, Stay foolish.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/superiorlu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:luyingrui518@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是什么"><span class="nav-number">2.</span> <span class="nav-text">是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何监控"><span class="nav-number">3.</span> <span class="nav-text">如何监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控指标"><span class="nav-number">4.</span> <span class="nav-text">监控指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控步骤"><span class="nav-number">5.</span> <span class="nav-text">监控步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实时监控和报警"><span class="nav-number">6.</span> <span class="nav-text">实时监控和报警</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
 
 
-<script>
-	var yiliaConfig = {
-		fancybox: true,
-		mathjax: true,
-		animate: true,
-		isHome: false,
-		isPost: true,
-		isArchive: false,
-		isTag: false,
-		isCategory: false,
-		open_in_new: false
-	}
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LuYingRui</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
-<script src="/js/main.js"></script>
 
 
 
 
 
 
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-    tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("uIC3EuG03V9A6aT9sOYsxgVp-gzGzoHsz", "9iw8z38TxSUrQ2yCdiJCDchS");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
     }
-});
 
-MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
-});
-</script>
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
 
 
-  </div>
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>
