@@ -98,7 +98,7 @@
 
 
 
-  <meta name="keywords" content="Ruby, Java, Coding, Software Engineer">
+  <meta name="keywords" content="http2,nginx,openssl,">
 
 
 
@@ -111,16 +111,20 @@
 
 
 
-<meta name="description" content="Stay hungry, Stay foolish.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Rui&#39;s Blog">
-<meta property="og:url" content="https://blog.lovecoding.org/index.html">
+<meta name="description" content="快速搭建本地HTTP/2服务背景 2015年5月 HTTP/2 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到1/3。本文目的是为了快速搭建一个本地HTTP/2服务，以供研发小伙伴开发测试，从而加深对HTTP/2的理解。  环境 OpenSSL: 1.0.2q Nginx: 1.15.7  步骤 生成本地根证书：  12345# 使用AES256-bit编码加密">
+<meta name="keywords" content="http2,nginx,openssl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx_http2">
+<meta property="og:url" content="https://blog.lovecoding.org/2018/12/24/nginx-http2/index.html">
 <meta property="og:site_name" content="Rui&#39;s Blog">
-<meta property="og:description" content="Stay hungry, Stay foolish.">
+<meta property="og:description" content="快速搭建本地HTTP/2服务背景 2015年5月 HTTP/2 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到1/3。本文目的是为了快速搭建一个本地HTTP/2服务，以供研发小伙伴开发测试，从而加深对HTTP/2的理解。  环境 OpenSSL: 1.0.2q Nginx: 1.15.7  步骤 生成本地根证书：  12345# 使用AES256-bit编码加密">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/21/FsW0zQ.png">
+<meta property="og:updated_time" content="2018-12-24T03:50:09.833Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rui&#39;s Blog">
-<meta name="twitter:description" content="Stay hungry, Stay foolish.">
+<meta name="twitter:title" content="nginx_http2">
+<meta name="twitter:description" content="快速搭建本地HTTP/2服务背景 2015年5月 HTTP/2 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到1/3。本文目的是为了快速搭建一个本地HTTP/2服务，以供研发小伙伴开发测试，从而加深对HTTP/2的理解。  环境 OpenSSL: 1.0.2q Nginx: 1.15.7  步骤 生成本地根证书：  12345# 使用AES256-bit编码加密">
+<meta name="twitter:image" content="https://s1.ax1x.com/2018/12/21/FsW0zQ.png">
 
 
 
@@ -150,13 +154,13 @@
 
 
 
-  <link rel="canonical" href="https://blog.lovecoding.org/">
+  <link rel="canonical" href="https://blog.lovecoding.org/2018/12/24/nginx-http2/">
 
 
 
 
 
-  <title>Rui's Blog</title>
+  <title>nginx_http2 | Rui's Blog</title>
   
 
 
@@ -185,8 +189,7 @@
     
   
 
-  <div class="container sidebar-position-right 
-  page-home">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -317,9 +320,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -349,9 +352,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/24/nginx-http2/" itemprop="url">nginx_http2</a></h1>
+          <h1 class="post-title" itemprop="name headline">nginx_http2</h1>
         
 
         <div class="post-meta">
@@ -412,9 +413,7 @@
       
 
       
-        
-          
-            <h3 id="快速搭建本地HTTP-2服务"><a href="#快速搭建本地HTTP-2服务" class="headerlink" title="快速搭建本地HTTP/2服务"></a>快速搭建本地HTTP/2服务</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote>
+        <h3 id="快速搭建本地HTTP-2服务"><a href="#快速搭建本地HTTP-2服务" class="headerlink" title="快速搭建本地HTTP/2服务"></a>快速搭建本地HTTP/2服务</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote>
 <p>2015年5月 <a href="https://http2.github.io/" target="_blank" rel="noopener">HTTP/2</a> 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到<a href="https://w3techs.com/technologies/details/ce-http2/all/all" target="_blank" rel="noopener">1/3</a>。<br>本文目的是为了快速搭建一个本地<code>HTTP/2</code>服务，以供研发小伙伴开发测试，从而加深对<code>HTTP/2</code>的理解。</p>
 </blockquote>
 <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ol>
@@ -464,8 +463,6 @@
 <li><a href="https://manuals.gfi.com/en/kerio/connect/content/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html" target="_blank" rel="noopener">Adding trusted root certificates to the server</a></li>
 </ul>
 
-          
-        
       
     </div>
     
@@ -480,14 +477,40 @@
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/http2/" rel="tag"># http2</a>
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
+          
+            <a href="/tags/openssl/" rel="tag"># openssl</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/18/es-bool-query/" rel="next" title="Elasticsearch bool query小结">
+                <i class="fa fa-chevron-left"></i> Elasticsearch bool query小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -497,649 +520,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.lovecoding.org/2018/12/18/es-bool-query/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LuYingRui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rui's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/18/es-bool-query/" itemprop="url">Elasticsearch bool query小结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-18T04:38:16+08:00">
-                2018-12-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/12/18/es-bool-query/" class="leancloud_visitors" data-flag-title="Elasticsearch bool query小结">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h5 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h5><blockquote>
-<p>最近有一个线上的es查询问题，最后确定在使用<code>bool query</code>多条件组合查询时出现<code>should</code>子句查询失效，于是查找资料来确定问题所在。</p>
-</blockquote>
-<p>其中<code>Elasticsearch</code>: <code>5.5.0</code></p>
-<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>找到相关的查询语句：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">"query": &#123;</span><br><span class="line">    "bool": &#123;     // bool query 查询</span><br><span class="line">      "should": [ // should子句</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">"match_phrase"</span>: &#123;</span><br><span class="line">            <span class="attr">"name"</span>: &#123;</span><br><span class="line">              <span class="attr">"query"</span>: <span class="string">"星起"</span>,</span><br><span class="line">              <span class="attr">"boost"</span>: <span class="number">30</span>,</span><br><span class="line">              <span class="attr">"slop"</span>: <span class="number">5</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ],</span><br><span class="line">      "filter": &#123; // #filter子句</span><br><span class="line">        "bool": &#123;</span><br><span class="line">          "must": [</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">"terms"</span>: &#123;</span><br><span class="line">                <span class="attr">"round"</span>: [<span class="string">"A轮"</span>]</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>问题在于：使用 <code>bool query</code>组合查询时，<code>should</code>与<code>filter</code> 组合查询的结果只匹配了<code>filter</code>子句，并不匹配<code>should</code>子句，达不到<code>should</code>和<code>filter</code>取交集的预期。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/12/18/es-bool-query/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.lovecoding.org/2016/04/20/monitor-unicorn-metrics/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LuYingRui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rui's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/20/monitor-unicorn-metrics/" itemprop="url">如何持续监控 Unicorn 的性能指标</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-20T14:24:46+08:00">
-                2016-04-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2016/04/20/monitor-unicorn-metrics/" class="leancloud_visitors" data-flag-title="如何持续监控 Unicorn 的性能指标">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>最近用 <a href="https://github.com/ruby-grape/grape" target="_blank" rel="noopener">Grape</a> 重写了一份API，马上要上线了，突然接到boss通知，需要做好应用服务器监控，以便上线遇到突发情况。于是乎从万能的 <a href="https://github.com/" target="_blank" rel="noopener">github</a> 上找到了这个开源的代码：<a href="https://github.com/TheClimateCorporation/unicorn-metrics" target="_blank" rel="noopener">unicron_metrics</a>。用起来还不错，下面给大家介绍一下认识。</p>
-<h3 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h3><p><code>unicorn_metrics</code>是采集基于Rack应用服务性能数据的工具, 尤其针对类似Unicorn<br>的多进程服务器，并提供一个对外查看数据的接口。</p>
-<h3 id="如何监控"><a href="#如何监控" class="headerlink" title="如何监控"></a>如何监控</h3><p>通过 <a href="http://raindrops.bogomips.org" target="_blank" rel="noopener">raindrops</a> 来采集<code>Uincorn</code>指标数据，同时通过构建<code>Middleware</code>统计应用中HTTP指标数据。</p>
-<h3 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h3><p><code>unicorn_metrics</code>监控指标分2部分：http指标和raindrops指标, 下面介绍各方面的指标：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">指标名称</th>
-<th style="text-align:left">指标类型</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">request.GET</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">GET请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.POST</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">POST请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.PUT</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">PUT请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.DELETE</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">DELETE请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">request.HEAD</td>
-<td style="text-align:left">timer</td>
-<td style="text-align:left">HEAD请求的消耗时间(ms)</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.2xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为2xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.3xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为3xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.4xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为4xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">responses.5xx</td>
-<td style="text-align:left">counter</td>
-<td style="text-align:left">响应状态为5xx的次数</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.calling</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">应用服务器调度的数量</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.writing</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">被写入数据的客户端的数量</td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.active</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">所有进程中已连接并尚未关闭的sockets的连接数 </td>
-</tr>
-<tr>
-<td style="text-align:left">raindrops.queued</td>
-<td style="text-align:left">gauge</td>
-<td style="text-align:left">等待连接sockets的请求数</td>
-</tr>
-</tbody>
-</table>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/20/monitor-unicorn-metrics/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.lovecoding.org/2016/02/04/rubycirtic/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LuYingRui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rui's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/02/04/rubycirtic/" itemprop="url">RubyCritic-一款不错的检测代码质量工具</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-04T13:45:29+08:00">
-                2016-02-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2016/02/04/rubycirtic/" class="leancloud_visitors" data-flag-title="RubyCritic-一款不错的检测代码质量工具">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>最近在开发<a href="http://www.oneapm.com/ci/feature.html" target="_blank" rel="noopener">Cloud Insight</a> API时，发现一个可以检测ruby代码质量的工具-<a href="https://github.com/whitesmith/rubycritic" target="_blank" rel="noopener">RubyCritic</a>。</p>
-<blockquote>
-<p>RubyCritic 集成 <a href="https://github.com/troessner/reek" target="_blank" rel="noopener">Reek</a>, <a href="https://github.com/seattlerb/flay" target="_blank" rel="noopener">Flay</a> 和 <a href="https://github.com/seattlerb/flog" target="_blank" rel="noopener">Flog</a>这3个分析代码的工具，对你的Ruby代码进行静态分析并生成质量报告。</p>
-</blockquote>
-<h3 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h3><ol>
-<li><p>可以总览你的项目,并且可以对代码打分(百分制)<br><img src="http://upload-images.jianshu.io/upload_images/334070-7fdec9ad235198e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-</li>
-<li><p>根据各自的坏味道数量建立文件索引</p>
-</li>
-</ol>
-<p>对不同文件按照<code>改动频率</code>、<code>复杂度</code>、<code>重复度</code>和<code>坏味道</code>4个维度进行综合评定代码质量等级</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/334070-ecb14c8223ecc2d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/02/04/rubycirtic/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.lovecoding.org/2015/12/05/caculate-app-memory-on-macosx/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LuYingRui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Rui's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/12/05/caculate-app-memory-on-macosx/" itemprop="url">探讨如何统计 Ruby 应用服务器使用内存方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-05T22:45:11+08:00">
-                2015-12-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2015/12/05/caculate-app-memory-on-macosx/" class="leancloud_visitors" data-flag-title="探讨如何统计 Ruby 应用服务器使用内存方法">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>最近在解决探针获取Ruby应用服务器的内存使用的情况，将解决的思路总结一下，希望对此感兴趣的伙伴一起探讨。</p>
-<p>先对比应用服务器：<a href="http://puma.io/" target="_blank" rel="noopener">Puma</a>和<a href="https://www.phusionpassenger.com/" target="_blank" rel="noopener">Passenger</a>，下面对比这2个服务器内存统计，</p>
-<h2 id="Puma-2-13-4"><a href="#Puma-2-13-4" class="headerlink" title="Puma (2.13.4)"></a>Puma (2.13.4)</h2><p> 单进程模式：直接获取进程id: <code>Process.pid</code><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">memory = <span class="string">`ps -o rss= <span class="subst">#&#123;Process.pid&#125;</span>`</span>.to_f / <span class="number">1024</span> <span class="comment">#单位:MB</span></span><br></pre></td></tr></table></figure></p>
-<p>cluster模式：以启动2个worker进程为例:<br> <img src="https://ruby-china-files.b0.upaiyun.com/photo/2015/60a1b6bc9287dffc9009bc01326c6035.png" alt="Puma cluster"><br>从上面截图可以看到，Puma启动后会出现3个进程：1个master进程和2个worker进程。<br>内存的使用情况(见<strong>RSS</strong>列):<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">109908</span> + <span class="number">109868</span> + <span class="number">7256</span> ).to_f / <span class="number">1024</span> = <span class="number">221.7109375</span> <span class="comment">#单位:MB</span></span><br></pre></td></tr></table></figure></p>
-<p>而对于探针来说，一个探针实例是伴随进程一起启动的，也就说一个探针只能识别自己所在的进程id，那如何获取应用服务器使用的内存？我们用其中1个woker进程所在的进程组[<strong>PGID</strong>]看一下:(为啥不是父进程?, 见下文Passenger)<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/12/05/caculate-app-memory-on-macosx/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -1147,6 +532,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -1167,8 +556,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -1244,6 +642,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#快速搭建本地HTTP-2服务"><span class="nav-number">1.</span> <span class="nav-text">快速搭建本地HTTP/2服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">1.2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤"><span class="nav-number">1.3.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">1.5.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1378,6 +792,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
