@@ -120,7 +120,7 @@
 <meta property="og:description" content="背景 2015年5月 HTTP/2 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到1/3。本文目的是为了快速搭建一个本地HTTP/2服务，以供研发小伙伴开发测试，从而加深对HTTP/2的理解。  环境 OpenSSL: 1.0.2q Nginx: 1.15.7  步骤 生成本地根证书：  12345# 使用AES256-bit编码加密生成4096位的根秘钥ope">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://s1.ax1x.com/2018/12/21/FsW0zQ.png">
-<meta property="og:updated_time" content="2018-12-24T03:52:01.213Z">
+<meta property="og:updated_time" content="2019-01-15T07:23:43.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="快速搭建本地HTTP&#x2F;2服务">
 <meta name="twitter:description" content="背景 2015年5月 HTTP/2 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到1/3。本文目的是为了快速搭建一个本地HTTP/2服务，以供研发小伙伴开发测试，从而加深对HTTP/2的理解。  环境 OpenSSL: 1.0.2q Nginx: 1.15.7  步骤 生成本地根证书：  12345# 使用AES256-bit编码加密生成4096位的根秘钥ope">
@@ -424,7 +424,7 @@
 <li>生成本地根证书：</li>
 </ol>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用AES256-bit编码加密生成4096位的根秘钥</span></span><br><span class="line">openssl genrsa -aes256 -out rootCA.key 4096</span><br><span class="line"></span><br><span class="line">Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br><span class="line">Verifying - Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br></pre></td></tr></table></figure>
-<p>各参数可以查看<code>man ca</code> 或者 查阅<a href="https://linux.die.net/man/1/openssl" target="_blank" rel="noopener">这里</a>。</p>
+<p>各参数可以查看<code>man ca</code> 或者 查阅<a href="https://linux.die.net/man/1/openssl" target="_blank" rel="noopener">这里</a>。<br><a id="more"></a> </p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用根秘钥生成根证书</span></span><br><span class="line">openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem</span><br><span class="line"></span><br><span class="line">Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">...</span><br><span class="line">-----</span><br><span class="line">Country Name (2 letter code) [AU]:CN</span><br><span class="line">State or Province Name (full name) [Some-State]:Beijing</span><br><span class="line">Locality Name (eg, city) []:Beijing</span><br><span class="line">Organization Name (eg, company) [Internet Widgits Pty Ltd]:Lovecoding.org</span><br><span class="line">Organizational Unit Name (eg, section) []:Lovecoding CA</span><br><span class="line">Common Name (e.g. server FQDN or YOUR name) []:Lovecoding ROOT CA</span><br><span class="line">Email Address []:</span><br><span class="line">Generating a RSA private key</span><br></pre></td></tr></table></figure>
 <ol start="2">
 <li>生成本地自签证书</li>
@@ -670,7 +670,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

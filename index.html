@@ -413,8 +413,7 @@
 
       
         
-          
-            <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote>
+          <h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote>
 <p>2015年5月 <a href="https://http2.github.io/" target="_blank" rel="noopener">HTTP/2</a> 标准协议正式发布后，已得到绝大部分的浏览器的支持，但截止发文时使用的网站占比还不到<a href="https://w3techs.com/technologies/details/ce-http2/all/all" target="_blank" rel="noopener">1/3</a>。<br>本文目的是为了快速搭建一个本地<code>HTTP/2</code>服务，以供研发小伙伴开发测试，从而加深对<code>HTTP/2</code>的理解。</p>
 </blockquote>
 <h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ol>
@@ -425,47 +424,17 @@
 <li>生成本地根证书：</li>
 </ol>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用AES256-bit编码加密生成4096位的根秘钥</span></span><br><span class="line">openssl genrsa -aes256 -out rootCA.key 4096</span><br><span class="line"></span><br><span class="line">Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br><span class="line">Verifying - Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br></pre></td></tr></table></figure>
-<p>各参数可以查看<code>man ca</code> 或者 查阅<a href="https://linux.die.net/man/1/openssl" target="_blank" rel="noopener">这里</a>。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用根秘钥生成根证书</span></span><br><span class="line">openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem</span><br><span class="line"></span><br><span class="line">Enter pass phrase <span class="keyword">for</span> rootCA.key: password</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">...</span><br><span class="line">-----</span><br><span class="line">Country Name (2 letter code) [AU]:CN</span><br><span class="line">State or Province Name (full name) [Some-State]:Beijing</span><br><span class="line">Locality Name (eg, city) []:Beijing</span><br><span class="line">Organization Name (eg, company) [Internet Widgits Pty Ltd]:Lovecoding.org</span><br><span class="line">Organizational Unit Name (eg, section) []:Lovecoding CA</span><br><span class="line">Common Name (e.g. server FQDN or YOUR name) []:Lovecoding ROOT CA</span><br><span class="line">Email Address []:</span><br><span class="line">Generating a RSA private key</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>生成本地自签证书</li>
-</ol>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#生成自签秘钥</span></span><br><span class="line">openssl req -new -sha256 -nodes -out server.csr -newkey rsa:2048 -keyout server.key -config server.csr.cnf</span><br><span class="line"></span><br><span class="line"><span class="comment">#生成自签证书</span></span><br><span class="line">openssl x509 -req -<span class="keyword">in</span> server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.crt -days 600 -sha256 -extfile v3.ext</span><br></pre></td></tr></table></figure>
-<p>其中<code>server.csr.cnf</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[ req ]</span><br><span class="line">default_bits       = 2048</span><br><span class="line">prompt             = no</span><br><span class="line">default_md         = sha256</span><br><span class="line">distinguished_name = req_distinguished_name</span><br><span class="line"></span><br><span class="line">[ req_distinguished_name ]</span><br><span class="line">C            = CN</span><br><span class="line">ST           = Beijing</span><br><span class="line">L            = Beijing</span><br><span class="line">O            = MyOrganization</span><br><span class="line">OU           = MyOrganizationUnit</span><br><span class="line">emailAddress = lovecoding@example.com</span><br><span class="line">CN           = localhost</span><br></pre></td></tr></table></figure></p>
-<p><code>v3.ext</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">authorityKeyIdentifier=keyid,issuer</span><br><span class="line">basicConstraints=CA:FALSE</span><br><span class="line">keyUsage=digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</span><br><span class="line">subjectAltName=@alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1=localhost</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>配置nginx</li>
-</ol>
-<p>将<code>server.crt</code>和<code>server.key</code>添加到nginx：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen [::]:443 ssl http2 ipv6only=on;</span><br><span class="line">        listen 443 ssl http2;</span><br><span class="line">        ssl_certificate /etc/nginx/certs/server.crt;</span><br><span class="line">        ssl_certificate_key /etc/nginx/certs/server.key;</span><br><span class="line">        ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">        ssl_ciphers           HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_session_cache     shared:SSL:1m;</span><br><span class="line"></span><br><span class="line">        server_name localhost;</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure></p>
-<p>重启nginx:<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -t</span><br><span class="line">sudo nginx -s reload</span><br></pre></td></tr></table></figure></p>
-<ol start="4">
-<li>信任自签证书</li>
-</ol>
-<p>首次打开网页时，会提示证书无效，那么将自签的证书加入信任列表即可:</p>
-<ul>
-<li><strong>Mac OS</strong>：</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo security add-trusted-cert -d -r trustAsRoot -k /Library/Keychains/System.keychain server.crt</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>Ubuntu</strong>:</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp server.crt /usr/<span class="built_in">local</span>/share/ca-certificates/server.crt</span><br><span class="line">sudo update-ca-certificates</span><br></pre></td></tr></table></figure>
-<p>其他系统可以查阅<a href="https://manuals.gfi.com/en/kerio/connect/content/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html" target="_blank" rel="noopener">这里</a>。</p>
-<p>此时打开浏览器可以看到：<br>  </p><p align="center"><br>   <img src="https://s1.ax1x.com/2018/12/21/FsW0zQ.png" width="75%" heigth="75%"><br>  </p><p></p>
-<p>说明自签证书已有效，并支持<code>HTTP/2</code>服务。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>本文介绍了本地快速搭建<code>HTTP/2</code>服务，希望对研发伙伴有所帮助。目前所有代码都已放到<a href="https://github.com/superiorlu/local-http2" target="_blank" rel="noopener">local-http2</a>，喜欢的同学可以<code>Star</code> :)。<br>还有<a href="https://daniel.haxx.se/http3-explained/" target="_blank" rel="noopener">HTTP/3</a>草案已出，感兴趣的可以了解一下。</p>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
-<li><a href="https://github.com/dakshshah96/local-cert-generator" target="_blank" rel="noopener">local-cert-generator</a></li>
-<li><a href="https://jamielinux.com/docs/openssl-certificate-authority/introduction.html" target="_blank" rel="noopener">OpenSSL Certificate Authority</a></li>
-<li><a href="https://www.shellhacks.com/create-csr-openssl-without-prompt-non-interactive/" target="_blank" rel="noopener">How to create csr using Openssl without prompt</a></li>
-<li><a href="https://manuals.gfi.com/en/kerio/connect/content/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html" target="_blank" rel="noopener">Adding trusted root certificates to the server</a></li>
-</ul>
-
-          
+<p>各参数可以查看<code>man ca</code> 或者 查阅<a href="https://linux.die.net/man/1/openssl" target="_blank" rel="noopener">这里</a>。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/24/nginx-http2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </p></div>
     
     
     
@@ -1256,7 +1225,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
